@@ -20,7 +20,10 @@ export class SlotResponseDto {
   })
   endAt: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: '정원 (고정 3명)',
+    example: 3,
+  })
   capacity: number;
 
   @ApiProperty()

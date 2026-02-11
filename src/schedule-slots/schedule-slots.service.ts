@@ -54,7 +54,7 @@ export class ScheduleSlotsService {
       counselorId: user.userId,
       startAt,
       endAt,
-      capacity: dto.capacity ?? 3,
+      capacity: 3,
       status: dto.status ?? SlotStatus.OPEN,
     });
     return this.slotRepository.save(slot);
@@ -130,7 +130,6 @@ export class ScheduleSlotsService {
       updates.startAt = startAt;
       updates.endAt = endAt;
     }
-    if (dto.capacity != null) updates.capacity = dto.capacity;
     if (dto.status != null) updates.status = dto.status;
 
     await this.slotRepository.update(id, updates);

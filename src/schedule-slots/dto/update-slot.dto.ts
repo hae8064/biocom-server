@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDateString, IsEnum, IsInt, IsOptional, Min } from 'class-validator';
+import { IsDateString, IsEnum, IsOptional } from 'class-validator';
 import { SlotStatus } from '../entities/schedule-slot.entity';
 
 export class UpdateSlotDto {
@@ -11,12 +11,6 @@ export class UpdateSlotDto {
   @IsOptional()
   @IsDateString()
   startAt?: string;
-
-  @ApiPropertyOptional({ description: '정원' })
-  @IsOptional()
-  @IsInt()
-  @Min(0)
-  capacity?: number;
 
   @ApiPropertyOptional({ enum: SlotStatus })
   @IsOptional()
