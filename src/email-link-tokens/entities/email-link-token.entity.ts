@@ -17,6 +17,9 @@ export class EmailLinkToken {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ name: 'counselor_id', type: 'uuid' })
+  counselorId: string;
+
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'counselor_id' })
   counselor: User;
