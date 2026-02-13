@@ -21,22 +21,8 @@ export function computeEndAt(startAt: Date): Date {
   return new Date(startAt.getTime() + SLOT_DURATION_MINUTES * 60 * 1000);
 }
 
-/** Date를 KST ISO 문자열로 변환 (응답용, 예: 2026-02-11T09:00:00+09:00) */
-export function formatDateToKst(date: Date): string {
-  const formatter = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Asia/Seoul',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  });
-  const parts = formatter.formatToParts(date);
-  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
-  return `${get('year')}-${get('month')}-${get('day')}T${get('hour')}:${get('minute')}:${get('second')}${KST_OFFSET}`;
-}
+/** Date를 KST ISO 문자열로 변환 - common/utils/date.utils에서 재export */
+export { formatDateToKst } from '../common/utils/date.utils';
 
 /** 30분 단위로 정렬되어 있는지 확인 (분이 0 또는 30, 초/밀리초 0) */
 export function isAlignedTo30Min(date: Date): boolean {

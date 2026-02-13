@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -25,6 +26,7 @@ import { CreateSlotDto } from './dto/create-slot.dto';
 import { UpdateSlotDto } from './dto/update-slot.dto';
 import { SlotResponseDto } from './dto/slot-response.dto';
 import { CreateSlotResponseDto } from './dto/create-slot-response.dto';
+import { SlotBookingItemDto } from './dto/slot-booking-response.dto';
 
 @ApiTags('관리자 - 슬롯 (Admin Slots)')
 @ApiBearerAuth()
@@ -34,19 +36,42 @@ import { CreateSlotResponseDto } from './dto/create-slot-response.dto';
 export class AdminSlotsController {
   constructor(private readonly slotsService: ScheduleSlotsService) {}
 
+  @Get(':slotId/bookings')
+  @ApiOperation({ summary: '슬롯 예약자 목록 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '해당 슬롯의 예약자 목록',
+    type: [SlotBookingItemDto],
+  })
+  @ApiResponse({ status: 403, description: '권한 없음 (상담사는 본인 슬롯만)' })
+  @ApiResponse({ status: 404, description: '슬롯을 찾을 수 없음' })
+  async findBookings(
+    @Param('slotId') slotId: string,
+    @CurrentUser() user: JwtValidateResult,
+  ) {
+    return this.slotsService.findBookingsBySlotId(slotId, user);
+  }
+
   @Get()
   @ApiOperation({
     summary: '슬롯 목록 조회',
-    description: 'JWT 토큰의 사용자(상담사) ID로 본인 슬롯만 조회',
+    description:
+      'JWT 토큰의 사용자(상담사) ID로 본인 슬롯만 조회. includeBookings=true 시 예약 목록 포함 (N+1 방지, IN batch 조회)',
   })
   @ApiResponse({
     status: 200,
-    description: '슬롯 목록',
+    description: '슬롯 목록 (includeBookings=true 시 bookings 포함)',
     type: [SlotResponseDto],
   })
-  async findAll(@CurrentUser() user: JwtValidateResult) {
-    const slots = await this.slotsService.findAll(user.userId);
-    return slots.map((s) => this.slotsService.formatSlotForResponse(s));
+  async findAll(
+    @CurrentUser() user: JwtValidateResult,
+    @Query('includeBookings') includeBookings?: string,
+  ) {
+    const slots = await this.slotsService.findAll(
+      user.userId,
+      includeBookings === 'true',
+    );
+    return slots;
   }
 
   @Get(':id')

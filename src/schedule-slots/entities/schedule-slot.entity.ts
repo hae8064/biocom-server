@@ -1,7 +1,7 @@
 import {
   Column,
   Entity,
-  Index,
+  // Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -15,7 +15,7 @@ export enum SlotStatus {
 }
 
 @Entity('schedule_slots')
-@Index(['counselorId', 'startAt'])
+// @Index(['counselorId', 'startAt'])
 @Unique(['counselorId', 'startAt'])
 export class ScheduleSlot {
   @PrimaryGeneratedColumn('uuid')
