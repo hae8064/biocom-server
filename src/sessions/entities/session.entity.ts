@@ -4,10 +4,19 @@ import {
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import { Booking } from '../../bookings/entities/booking.entity';
 
+export enum SessionOutcome {
+  COMPLETED = 'COMPLETED',
+  NO_SHOW = 'NO_SHOW',
+  CANCELLED = 'CANCELLED',
+  FOLLOW_UP = 'FOLLOW_UP',
+}
+
 @Entity('sessions')
+@Unique(['booking'])
 export class Session {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -19,8 +28,8 @@ export class Session {
   @Column({ type: 'text', nullable: true })
   notes: string | null;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  outcome: string | null;
+  @Column({ type: 'enum', enum: SessionOutcome, nullable: true })
+  outcome: SessionOutcome | null;
 
   @Column({ name: 'started_at', type: 'timestamptz', nullable: true })
   startedAt: Date | null;
