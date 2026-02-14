@@ -77,6 +77,40 @@ export class SessionsService {
     };
   }
 
+  /**
+   * 예약에 대한 상담 기록 조회.
+   */
+  async getSessionByBookingId(
+    bookingId: string,
+    user: JwtValidateResult,
+  ): Promise<Record<string, unknown>> {
+    const booking = await this.bookingRepository.findOne({
+      where: { id: bookingId },
+      relations: ['slot'],
+    });
+    if (!booking) {
+      throw new NotFoundException('예약을 찾을 수 없습니다.');
+    }
+
+    if (
+      user.role === UserRole.COUNSELOR &&
+      booking.slot.counselorId !== user.userId
+    ) {
+      throw new ForbiddenException(
+        '본인 슬롯의 예약만 상담 기록을 조회할 수 있습니다.',
+      );
+    }
+
+    const session = await this.sessionRepository.findOne({
+      where: { booking: { id: bookingId } },
+    });
+    if (!session) {
+      throw new NotFoundException('해당 예약에 대한 상담 기록이 없습니다.');
+    }
+
+    return this.formatSessionForResponse(session, bookingId);
+  }
+
   formatSessionForResponse(
     session: Session,
     bookingId: string,
