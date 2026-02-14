@@ -82,6 +82,7 @@ pnpm run start:dev     # Nest 서버 실행 (watch 모드)
 
 ### 관리자 - 상담 기록
 
+- `GET /admin/bookings/:bookingId/session` - 상담 기록 조회
 - `POST /admin/bookings/:bookingId/session` - 상담 기록 저장 (notes, outcome 등)
 
 ### 공개 (토큰 필요)
