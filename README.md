@@ -1,4 +1,4 @@
-# Biocom API
+# NestJS Playground API
 
 상담 예약 시스템 API 서버. 상담사의 슬롯 관리, 예약 링크 발급, 신청자의 예약 및 상담 기록 관리 기능을 제공합니다.
 
